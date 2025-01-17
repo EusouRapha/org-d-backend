@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryRequestDto } from './dto/create-category-request.dto';
@@ -26,17 +27,20 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.categoriesService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: UpdateCategoryRequestDto) {
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() body: UpdateCategoryRequestDto,
+  ) {
     return this.categoriesService.update(id, body);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(id);
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.categoriesService.hardDelete(id);
   }
 }
