@@ -7,11 +7,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { LoggerMiddleware } from './logger.middleware';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     CategoriesModule,
     ProductsModule,
+    UsersModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -29,6 +31,7 @@ import { LoggerMiddleware } from './logger.middleware';
         synchronize: true,
       }),
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

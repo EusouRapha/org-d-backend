@@ -7,16 +7,21 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryRequestDto } from './dto/create-category-request.dto';
 import { UpdateCategoryRequestDto } from './dto/update-category-request.dto';
+import { Roles } from '../guards/roles.decorator';
+import { RolesGuard } from 'src/guards/role.guard';
 
+@UseGuards(RolesGuard)
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
+  @Roles(['common'])
   create(@Body() body: CreateCategoryRequestDto) {
     return this.categoriesService.create(body);
   }

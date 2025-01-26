@@ -5,35 +5,38 @@ import {
   Res,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CategoriesRepository } from './categories.repository';
-import { CreateCategoryRequestDto } from './dto/create-category-request.dto';
-import { UpdateCategoryRequestDto } from './dto/update-category-request.dto';
-import { Category } from './entities/category.entity';
+import { User } from './entities/user.entity';
+import { UsersRepository } from './users.repository';
+import { CreateUserRequestDto } from './dto/create-user.dto';
+import { Role } from './entities/role.entity';
+import { UpdateUserRequestDto } from './dto/update-user.dto';
 import { GenericResponseType } from '../generic-types.type';
 
 @Injectable()
-export class CategoriesService {
+export class UsersService {
   constructor(
-    @InjectRepository(Category)
-    private readonly categoriesRepository: CategoriesRepository,
+    @InjectRepository(User)
+    private readonly usersRepository: UsersRepository,
   ) {}
 
-  async create(body: CreateCategoryRequestDto): Promise<GenericResponseType> {
+  async create(body: CreateUserRequestDto): Promise<GenericResponseType> {
     try {
-      if (!body.name) {
+      if (!body.name || !body.last_name || !body.email) {
         throw new BadRequestException();
       }
-      const newCategory: Category = {
+      const newUser: User = {
         name: body.name,
+        last_name: body.last_name,
+        email: body.email,
         created_at: new Date(),
         updated_at: new Date(),
-        is_enabled: true,
+        role: new Role('commonId'),
       };
-      await this.categoriesRepository.save(newCategory);
+      await this.usersRepository.save(newUser);
 
       return {
         statusCode: HttpStatus.OK,
-        message: 'Category created successfully',
+        message: 'User created successfully',
       };
     } catch (error) {
       const isBadRequest = error instanceof BadRequestException;
@@ -42,37 +45,35 @@ export class CategoriesService {
           ? HttpStatus.BAD_REQUEST
           : HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Validation failed',
-        error: isBadRequest ? 'Category name is required' : error,
+        error: isBadRequest ? 'User fields are not populated' : error,
       };
     }
   }
 
-  async findAll(): Promise<Category[]> {
-    return await this.categoriesRepository.find();
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find();
   }
 
-  async findOne(id: string): Promise<Category> {
-    return await this.categoriesRepository.findOneBy({ category_id: id });
+  async findOne(id: string): Promise<User> {
+    return await this.usersRepository.findOneBy({ user_id: id });
   }
 
   async update(
     id: string,
-    body: UpdateCategoryRequestDto,
+    body: UpdateUserRequestDto,
   ): Promise<GenericResponseType> {
     try {
       if (!id || !Object.keys(body).length) {
         throw new BadRequestException();
       }
-      const foundCategory: Category = await this.categoriesRepository.findOneBy(
-        {
-          category_id: id,
-        },
-      );
-      const updatedCategory: Category = {
-        ...foundCategory,
+      const foundUser: User = await this.usersRepository.findOneBy({
+        user_id: id,
+      });
+      const updatedCategory: User = {
+        ...foundUser,
         ...body,
       };
-      await this.categoriesRepository.save(updatedCategory);
+      await this.usersRepository.save(updatedCategory);
 
       return {
         statusCode: HttpStatus.OK,
@@ -94,17 +95,15 @@ export class CategoriesService {
 
   async hardDelete(id: string): Promise<GenericResponseType> {
     try {
-      const foundCategory: Category = await this.categoriesRepository.findOneBy(
-        {
-          category_id: id,
-        },
-      );
+      const foundUser: User = await this.usersRepository.findOneBy({
+        user_id: id,
+      });
 
-      if (!foundCategory) {
+      if (!foundUser) {
         throw new BadRequestException();
       }
 
-      await this.categoriesRepository.delete(foundCategory);
+      await this.usersRepository.delete(foundUser);
 
       return {
         statusCode: HttpStatus.OK,
@@ -117,7 +116,7 @@ export class CategoriesService {
           ? HttpStatus.BAD_REQUEST
           : HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Validation failed',
-        error: isBadRequest ? 'Category not found' : error,
+        error: isBadRequest ? 'User not found' : error,
       };
     }
   }
