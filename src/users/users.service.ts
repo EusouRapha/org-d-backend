@@ -24,14 +24,14 @@ export class UsersService {
       if (!body.name || !body.last_name || !body.email) {
         throw new BadRequestException();
       }
-      const newUser: User = {
-        name: body.name,
-        last_name: body.last_name,
-        email: body.email,
-        created_at: new Date(),
-        updated_at: new Date(),
-        role: new Role('commonId'),
-      };
+      const newUser = new User(
+        body.name,
+        body.password,
+        body.last_name,
+        body.email,
+        new Date(), // created_at
+        new Date(), // updated_at
+      );
       await this.usersRepository.save(newUser);
 
       return {
@@ -54,8 +54,14 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
+  async findOneByEmail(email: string): Promise<User> {
+    const result = await this.usersRepository.findOneBy({ email: email });
+    return result;
+  }
+
   async findOne(id: string): Promise<User> {
-    return await this.usersRepository.findOneBy({ user_id: id });
+    const result = await this.usersRepository.findOneBy({ user_id: id });
+    return result;
   }
 
   async update(
