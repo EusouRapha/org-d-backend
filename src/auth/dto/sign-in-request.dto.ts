@@ -2,26 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 
-
-export class CreateUserRequestDto {
-  @IsNotEmpty()
-  @Transform(({ value }) => value?.trim())
-  @ApiProperty({
-    example: 'Raphael',
-    description: 'The name of the user',
-  })
-  name: string;
-
-  @IsNotEmpty()
-  @Transform(({ value }) => value?.trim())
-  @ApiProperty({
-    example: 'Gomes',
-    description: 'The last_name of the user',
-  })
-  last_name: string;
-
+export class SignInRequestDto {
   @IsEmail()
-  @IsNotEmpty()
   @Transform(({ value }) => value?.trim())
   @ApiProperty({
     example: 'raphael@email.com',

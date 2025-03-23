@@ -14,8 +14,12 @@ import { CreateCategoryRequestDto } from './dto/create-category-request.dto';
 import { UpdateCategoryRequestDto } from './dto/update-category-request.dto';
 import { Roles } from '../guards/roles.decorator';
 import { RolesGuard } from 'src/guards/role.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from 'src/guards/auth.guard';
 
-@UseGuards(RolesGuard)
+@ApiBearerAuth('JWT')
+@UseGuards(AuthGuard)
+// @UseGuards(RolesGuard)
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}

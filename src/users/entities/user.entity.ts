@@ -4,48 +4,35 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Role } from './role.entity';
 
 @Entity('users')
 export class User {
-  constructor(
-    name: string,
-    password: string,
-    last_name: string,
-    email: string,
-    created_at: Date,
-    updated_at: Date,
-  ) {
-    this.name = name;
-    this.password = password;
-    this.last_name = last_name;
-    this.email = email;
-    this.created_at = created_at;
-    this.updated_at = updated_at;
-  }
-
   @PrimaryGeneratedColumn('uuid')
-  user_id?: string;
+  user_id: string;
 
-  @Column({type: String})
+  @Column()
   password: string;
 
-  @Column({ type: String })
+  @Column()
   name: string;
 
-  @Column({ type: String })
+  @Column()
   last_name: string;
 
-  @Column({ type: String })
+  @Column({ unique: true })
   email: string;
 
-  @Column({ type: Date })
+  @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
-  @Column({ type: Date })
+  @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
 
-  @ManyToOne(() => Role, (role) => role.users)
-  role: Role;
+  @ManyToOne(() => Role, (role) => role.users, { nullable: true })
+  @JoinColumn({ name: 'role_id' })
+  role?: Role;
 }

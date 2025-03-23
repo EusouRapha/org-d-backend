@@ -6,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from '../auth/constants';
 import { Request } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
@@ -24,7 +23,7 @@ export class AuthGuard implements CanActivate {
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.secret,
+        secret: 'secret',
       });
       request['user'] = payload;
     } catch {
