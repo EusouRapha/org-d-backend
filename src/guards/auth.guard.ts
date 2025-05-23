@@ -1,4 +1,4 @@
-// filepath: /c:/Users/rapha/OneDrive/Área de Trabalho/Codigos/Org-D/src/guards/auth.guard.ts
+// filepath: /c:/Clients/rapha/OneDrive/Área de Trabalho/Codigos/Org-D/src/guards/auth.guard.ts
 import {
   CanActivate,
   ExecutionContext,
@@ -15,9 +15,9 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    console.log('Request Headers:', request.headers); // Log the request headers
+    console.log('Request Headers:', request.headers); 
     const token = this.extractTokenFromHeader(request);
-    console.log('Extracted Token:', token); // Log the extracted token
+    console.log('Extracted Token:', token);
     if (!token) {
       throw new UnauthorizedException('Token not found');
     }
@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: 'secret',
       });
-      request['user'] = payload;
+      request['client'] = payload;
     } catch {
       throw new UnauthorizedException('Invalid token');
     }

@@ -1,18 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, Matches } from 'class-validator';
 
 export class SignInRequestDto {
-  @IsEmail()
+  @IsNotEmpty()
   @Transform(({ value }) => value?.trim())
-  @ApiProperty({
-    example: 'raphael@email.com',
-    description: 'The email of the user',
+  @Matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, {
+    message: 'CPF must be in the format XXX.XXX.XXX-XX',
   })
-  email: string;
+  @ApiProperty({
+    example: '231.321.231-12',
+    description: 'CPF of the client',
+  })
+  cpf: string;
 
   @IsNotEmpty()
   @Transform(({ value }) => value?.trim())
-  @ApiProperty()
+  @ApiProperty({
+    example: '123456',
+    description: 'Password of the client',
+  })
   password: string;
 }

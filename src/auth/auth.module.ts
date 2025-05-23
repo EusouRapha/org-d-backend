@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UsersModule } from 'src/users/users.module';
+import { ClientsModule } from 'src/clients/client.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    UsersModule,
+    ClientsModule,
     ConfigModule,
     JwtModule.registerAsync({
       global: true,

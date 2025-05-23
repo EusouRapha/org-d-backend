@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { ClientsService } from '../clients/clients.service';
 import { SignInRequestDto } from './dto/sign-in-request.dto';
 import { JwtService } from '@nestjs/jwt';
 import { SignInResponseDto } from './dto/sign-in-response.dto';
@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 export class AuthService {
   private jwtExpirationTime: number;
   constructor(
-    private readonly usersService: UsersService,
+    private readonly clientsService: ClientsService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
@@ -19,18 +19,19 @@ export class AuthService {
     );
   }
 
-  async signIn(body: SignInRequestDto): Promise<SignInResponseDto> {
-    const foundUser = await this.usersService.findOneByEmail(body.email);
-    if (foundUser && !bcryptCompareSync(body.password, foundUser.password)) {
-      throw new UnauthorizedException();
-    }
-    const payload = { sub: foundUser.user_id, username: foundUser.name };
-    return {
-      id: foundUser.user_id,
-      email: foundUser.email,
-      username: `${foundUser.name} ${foundUser.last_name}`,
-      access_token: await this.jwtService.signAsync(payload),
-      expiresIn: this.jwtExpirationTime,
-    };
+async signIn(body: SignInRequestDto): Promise<SignInResponseDto> {
+  const foundClient = await this.clientsService.findOneByCPF(body.cpf);
+  if (!foundClient || !bcryptCompareSync(body.password, foundClient.password)) {
+    throw new UnauthorizedException();
   }
+  const payload = { sub: foundClient.client_id, clientName: foundClient.name };
+  return {
+    id: foundClient.client_id,
+    name: foundClient.name,
+    cpf: foundClient.cpf,
+    phone_number: foundClient.phone_number,
+    access_token: await this.jwtService.signAsync(payload),
+    expiresIn: this.jwtExpirationTime,
+  } ;
+}
 }
