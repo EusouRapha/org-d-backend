@@ -19,10 +19,4 @@ export class AccountDto {
     description: 'The CPF of the client associated with the account',
   })
   cpf: string;
-
-  constructor(account: Account) {
-    this.id = account.id;
-    this.number = account.number;
-    this.cpf = account.client.cpf;
-  }
 }

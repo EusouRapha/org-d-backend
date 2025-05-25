@@ -25,9 +25,9 @@ export class AccountsController {
     return this.accountsService.create(createAccountDto);
   }
 
-  @Get()
-  findAll() {
-    return this.accountsService.findAll();
+  @Get(':client_id')
+  findAll(@Param('client_id') client_id: number) {
+    return this.accountsService.findAll(+client_id);
   }
 
   @Get(':id')

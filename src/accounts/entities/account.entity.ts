@@ -3,7 +3,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
-  OneToMany
+  OneToMany,
+  JoinColumn
 } from 'typeorm';
 import { Client } from 'src/clients/entities/clients.entity';
 import { Launch } from 'src/launches/entities/launch.entity';
@@ -18,6 +19,7 @@ export class Account {
   number: string;
 
   @ManyToOne(() => Client, client => client.accounts, { eager: true })
+  @JoinColumn({ name: 'client_id' }) 
   client: Client;
 
   @OneToMany(() => Launch, launch => launch.account)
