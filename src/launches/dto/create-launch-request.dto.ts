@@ -19,10 +19,9 @@ export class CreateLaunchRequestDto {
   })
   type: LaunchType;
 
-  @IsUUID()
   @ApiProperty({
-    example: 'c5b27d71-24d2-4ae8-b159-bd7643cd0dc7',
+    example: 'JQ-1212122',
     description: 'The account ID related to this launch',
   })
-  account_id: string;
+  account_number: string;
 }

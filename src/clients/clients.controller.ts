@@ -35,7 +35,7 @@ export class ClientController {
   @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id', new ParseUUIDPipe()) id: number) {
-    return this.clientsService.findOne(id);
+    return this.clientsService.findOneById(id);
   }
 
   @ApiBearerAuth('JWT')

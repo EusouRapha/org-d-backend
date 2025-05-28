@@ -6,6 +6,7 @@ import { UpdateClientRequestDto } from './dto/update-client.dto';
 import { Client } from './entities/clients.entity';
 import { ClientsRepository } from './clients.repository';
 import { hashSync as bcryptHashSync } from 'bcrypt';
+import { GetClientResponseDto } from './dto/get-client-response-dto';
 
 @Injectable()
 export class ClientsService {
@@ -49,19 +50,27 @@ export class ClientsService {
     return client;
   }
 
-  async findOne(id: number): Promise<Client> {
+  async findOneById(id: number): Promise<GetClientResponseDto> {
     const client = await this.clientsRepository.findOneBy({ client_id: id });
     if (!client) {
       throw new BadRequestException('Client with the given ID not found');
     }
-    return client;
+    const response: GetClientResponseDto = {
+      client_id: client.client_id,
+      name: client.name,
+      cpf: client.cpf,
+      phone_number: client.phone_number,
+    };
+    return response;
   }
 
   async update(
     id: number,
     body: UpdateClientRequestDto,
   ): Promise<GenericResponseType> {
-    const foundClient: Client = await this.clientsRepository.findOneBy({ client_id: id });
+    const foundClient: Client = await this.clientsRepository.findOneBy({
+      client_id: id,
+    });
 
     if (!foundClient) {
       throw new BadRequestException('Client not found');
@@ -87,7 +96,9 @@ export class ClientsService {
   }
 
   async hardDelete(id: number): Promise<GenericResponseType> {
-    const foundClient: Client = await this.clientsRepository.findOneBy({ client_id: id });
+    const foundClient: Client = await this.clientsRepository.findOneBy({
+      client_id: id,
+    });
 
     if (!foundClient) {
       throw new BadRequestException('Client not found');

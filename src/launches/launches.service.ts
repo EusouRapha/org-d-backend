@@ -1,15 +1,13 @@
-import {
-  BadRequestException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateLaunchRequestDto } from './dto/create-launch-request.dto';
 import { UpdateLaunchRequestDto } from './dto/update-launch-request.dto';
-import { Launch } from './entities/launch.entity';
+import { Launch, LaunchType } from './entities/launch.entity';
 import { GenericResponseType } from '../generic-types.type';
 import { Account } from '../accounts/entities/account.entity';
+import { AccountsService } from 'src/accounts/accounts.service';
+import { GetLaunchResponseDto } from './dto/get-launch-response.dto';
 
 @Injectable()
 export class LaunchesService {
@@ -19,17 +17,16 @@ export class LaunchesService {
 
     @InjectRepository(Account)
     private readonly accountsRepository: Repository<Account>,
+
+    private readonly accountsService: AccountsService,
   ) {}
 
   async create(body: CreateLaunchRequestDto): Promise<GenericResponseType> {
     try {
-      if (!body.value || !body.type || !body.account_id) {
+      if (!body.value || !body.type || !body.account_number) {
         throw new BadRequestException();
       }
-
-      const account = await this.accountsRepository.findOneBy({
-        id: Number(body.account_id),
-      });
+      const account = await this.accountsService.findOne(body.account_number);
 
       if (!account) {
         throw new BadRequestException('Invalid account ID');
@@ -38,10 +35,18 @@ export class LaunchesService {
       const newLaunch: Launch = this.launchesRepository.create({
         value: body.value,
         type: body.type,
+        generated_at: new Date(),
         account: account,
       });
 
       await this.launchesRepository.save(newLaunch);
+
+      const newValue =
+        body.type === LaunchType.CREDIT
+          ? account.balance + body.value
+          : account.balance - body.value;
+
+      await this.accountsService.update(account.id, { value: newValue });
 
       return {
         statusCode: HttpStatus.OK,
@@ -59,10 +64,21 @@ export class LaunchesService {
     }
   }
 
-  async findAll(): Promise<Launch[]> {
-    return await this.launchesRepository.find({
-      relations: ['account'],
+  async findAllByAccountId(
+    account_id: number,
+  ): Promise<GetLaunchResponseDto[]> {
+    const launches = await this.launchesRepository.find({
+      where: { account: { id: account_id } },
     });
+
+    const response = launches.map((launch) => {
+      return {
+        value: launch.value,
+        type: launch.type,
+        generated_at: launch.generated_at,
+      } as GetLaunchResponseDto;
+    });
+    return response;
   }
 
   async findOne(id: string): Promise<Launch> {
@@ -90,9 +106,9 @@ export class LaunchesService {
         throw new BadRequestException('Launch not found');
       }
 
-      if (body.account_id) {
+      if (body.account_number) {
         const account = await this.accountsRepository.findOneBy({
-          id: Number(body.account_id),
+          id: Number(body.account_number),
         });
         if (!account) {
           throw new BadRequestException('Invalid account ID');

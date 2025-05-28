@@ -26,9 +26,9 @@ export class LaunchesController {
     return this.launchesService.create(body);
   }
 
-  @Get()
-  findAll() {
-    return this.launchesService.findAll();
+  @Get('accounts/:account_id')
+  findAllByAccountId(@Param('account_id') account_id: number) {
+    return this.launchesService.findAllByAccountId(account_id);
   }
 
   @Get(':id')

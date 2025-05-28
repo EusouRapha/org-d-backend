@@ -3,8 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from 'src/clients/entities/clients.entity';
 import { Repository } from 'typeorm';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
+import { UpdateAccountRequestDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
+import { ClientsService } from 'src/clients/clients.service';
+import { GetAccountResponseDto } from './dto/get-account-response-dto';
 
 @Injectable()
 export class AccountsService {
@@ -12,48 +14,55 @@ export class AccountsService {
     @InjectRepository(Account)
     private readonly accountsRepository: Repository<Account>,
     @InjectRepository(Client)
-    private readonly clientsRepository: Repository<Client>,
+    private readonly clientsService: ClientsService,
   ) {}
 
-  async findAll(client_id: number) {
+  async findAllByClientId(
+    client_id: number,
+    details?: boolean,
+  ): Promise<GetAccountResponseDto[]> {
     const accounts = await this.accountsRepository.find({
       where: { client: { client_id: client_id } },
       relations: ['launches'],
     });
 
     if (!accounts || accounts.length === 0) {
-      throw new Error('No accounts found for this client');
+      return [];
     }
 
-    return accounts.map((account) => {
-      if (account.launches.length === 0) {
-        return {
-          accountNumber: account.number,
-          balance: 0,
-        };
-      }
-      const totalCredit = account.launches
-        .filter((launch) => launch.type === 'CREDIT')
-        .reduce((sum, launch) => sum + Number(launch.value), 0);
+    if (!details) {
+      return accounts.map((account) => ({
+        id: account.id,
+        account_number: account.number,
+        balance: account.balance,
+      }));
+    }
 
-      const totalDebit = account.launches
-        .filter((launch) => launch.type === 'DEBIT')
-        .reduce((sum, launch) => sum + Number(launch.value), 0);
-
-      const balance = totalCredit - totalDebit;
-
+    const result = accounts.map((account) => {
       return {
-        accountNumber: account.number,
-        balance: balance,
+        id: account.id,
+        account_number: account.number,
+        balance: account.balance,
+        launches: [
+          ...account.launches.map((launch) => ({
+            id: launch.id,
+            value: launch.value,
+            type: launch.type,
+            date: launch.generated_at,
+          })),
+        ],
       };
     });
+
+    return result;
   }
 
-  async findOne(id: number) {
+  async findOne(account_number: string) {
     const account = await this.accountsRepository.findOne({
-      where: { id },
+      where: { number: account_number },
       relations: ['client'],
     });
+
     if (!account) {
       throw new Error('Account not found');
     }
@@ -61,22 +70,47 @@ export class AccountsService {
   }
 
   async create(body: CreateAccountDto) {
-    const client = await this.clientsRepository.findOne({
-      where: { client_id: body.client_id },
-    });
+    const client = await this.clientsService.findOneById(body.client_id);
 
-    const accountNumber = `${client.name.slice(0, 2).toUpperCase()}-${Math.floor(100000 + Math.random() * 900000)}`;
+    let account_number: string;
+    let isUnique = false;
+
+    while (!isUnique) {
+      account_number = `${client.name.slice(0, 2).toUpperCase()}-${Math.floor(100000 + Math.random() * 900000)}`;
+      const alreadyExists = await this.findAllByClientId(client.client_id);
+
+      isUnique = !alreadyExists.some(
+        (account) => account.account_number === account_number,
+      );
+    }
 
     const newAccount = {
-      number: accountNumber,
+      number: account_number,
+      balance: 0,
       client: client,
     };
 
     const account = this.accountsRepository.create(newAccount);
     return this.accountsRepository.save(account);
   }
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
+  async update(account_id: number, updateAccountDto: UpdateAccountRequestDto) {
+    try {
+      const account = await this.accountsRepository.findOne({
+        where: { id: account_id },
+        relations: ['client'],
+      });
+      if (!account) {
+        throw new Error('Account not found');
+      }
+
+      const updatedAccount = {
+        ...account,
+        balance: updateAccountDto.value,
+      };
+      return await this.accountsRepository.save(updatedAccount);
+    } catch (error) {
+      throw new Error(`Error updating account: ${error.message}`);
+    }
   }
 
   remove(id: number) {

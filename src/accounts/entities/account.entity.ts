@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
-  JoinColumn
+  JoinColumn,
 } from 'typeorm';
 import { Client } from 'src/clients/entities/clients.entity';
 import { Launch } from 'src/launches/entities/launch.entity';
@@ -18,10 +18,13 @@ export class Account {
   @Column({ length: 100 })
   number: string;
 
-  @ManyToOne(() => Client, client => client.accounts, { eager: true })
-  @JoinColumn({ name: 'client_id' }) 
+  @ManyToOne(() => Client, (client) => client.accounts, { eager: true })
+  @JoinColumn({ name: 'client_id' })
   client: Client;
 
-  @OneToMany(() => Launch, launch => launch.account)
+  @Column('float')
+  balance: number;
+
+  @OneToMany(() => Launch, (launch) => launch.account)
   launches: Launch[];
 }

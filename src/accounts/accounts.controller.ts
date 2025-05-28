@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
+import { UpdateAccountRequestDto } from './dto/update-account.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from 'src/guards/auth.guard';
 
@@ -25,23 +27,25 @@ export class AccountsController {
     return this.accountsService.create(createAccountDto);
   }
 
-  @Get(':client_id')
-  findAll(@Param('client_id') client_id: number) {
-    return this.accountsService.findAll(+client_id);
+  @Get('clients/:client_id')
+  findAllByClientId(
+    @Param('client_id') client_id: number,
+    @Query('details', ParseBoolPipe) details?: boolean,
+  ) {
+    return this.accountsService.findAllByClientId(+client_id, !!details);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accountsService.findOne(+id);
+  @Get(':account_number')
+  findOneByNumber(@Param('account_number') account_number: string) {
+    return this.accountsService.findOne(account_number);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
+  update(
+    @Param('id') id: number,
+    @Body() updateAccountDto: UpdateAccountRequestDto,
+  ) {
     return this.accountsService.update(+id, updateAccountDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.accountsService.remove(+id);
-  }
 }
