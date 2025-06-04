@@ -1,20 +1,19 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
-  Delete,
-  UseGuards,
-  Query,
   ParseBoolPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountRequestDto } from './dto/update-account.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { AuthGuard } from 'src/guards/auth.guard';
 
 @ApiBearerAuth('JWT')
 @UseGuards(AuthGuard)
@@ -47,5 +46,4 @@ export class AccountsController {
   ) {
     return this.accountsService.update(+id, updateAccountDto);
   }
-
 }
