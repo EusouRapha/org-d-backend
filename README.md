@@ -85,6 +85,8 @@ Compile o Org-D a partir do código-fonte e instale as dependências:
    npm install
    ```
 
+4. **Crie um arquivo .env baseado no .env.example que está na raiz do projeto**
+
 ### Uso
 
 Execute o projeto com:
@@ -93,11 +95,4 @@ Execute o projeto com:
 npm start
 ```
 
-### Testes
-
-Org-D utiliza o framework de testes Jest. Execute a suíte de testes com:
-
-```bash
-npm test
-```
 <div align="center">⬆️ <a href="#org-d-backend">Voltar ao topo</a></div>
