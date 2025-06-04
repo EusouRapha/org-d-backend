@@ -5,9 +5,9 @@
 *Impulsione sua jornada financeira com organização sem complicações.*
 
 <p>
-  <img alt="último-commit" src="https://img.shields.io/github/last-commit/EusouRapha/Org-D?style=flat&logo=git&logoColor=white&color=0080ff" />
-  <img alt="linguagem-principal-do-repositório" src="https://img.shields.io/github/languages/top/EusouRapha/Org-D?style=flat&color=0080ff" />
-  <img alt="quantidade-de-linguagens" src="https://img.shields.io/github/languages/count/EusouRapha/Org-D?style=flat&color=0080ff" />
+  <img alt="último-commit" src="https://img.shields.io/github/last-commit/EusouRapha/org-d-backend?style=flat&logo=git&logoColor=white&color=0080ff" />
+  <img alt="linguagem-principal-do-repositório" src="https://img.shields.io/github/languages/top/EusouRapha/org-d-backend?style=flat&color=0080ff" />
+  <img alt="quantidade-de-linguagens" src="https://img.shields.io/github/languages/count/EusouRapha/org-d-backend?style=flat&color=0080ff" />
 </p>
 
 <p>
@@ -72,12 +72,12 @@ Compile o Org-D a partir do código-fonte e instale as dependências:
 1. **Clone o repositório:**
 
    ```bash
-   git clone https://github.com/EusouRapha/Org-D.git
+   git clone https://github.com/EusouRapha/org-d-backend.git
    ```
 2. **Acesse o diretório do projeto:**
 
    ```bash
-   cd Org-D
+   cd org-d-backend
    ```
 3. **Instale as dependências:**
 
