@@ -93,6 +93,7 @@ export class AccountsService {
     const account = this.accountsRepository.create(newAccount);
     return this.accountsRepository.save(account);
   }
+
   async update(account_id: number, updateAccountDto: UpdateAccountRequestDto) {
     try {
       const account = await this.accountsRepository.findOne({

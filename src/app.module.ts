@@ -25,7 +25,7 @@ import { AuthModule } from './auth/auth.module';
         port: +configService.get('DB_PORT'),
         username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME2'),
+        database: configService.get('DB_NAME'),
         autoLoadEntities: true,
         entities: [join(process.cwd(), 'dist/**/*.entity.js')],
         //substituir quando aprender a usar migrations

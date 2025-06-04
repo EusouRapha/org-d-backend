@@ -1,19 +1,19 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseUUIDPipe,
+  Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
-import { ClientsService as ClientService } from './clients.service';
-import { CreateClientRequestDto as CreateClientRequestDto } from './dto/create-client.dto';
-import { UpdateClientRequestDto } from './dto/update-client.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { ClientsService as ClientService } from './clients.service';
+import { CreateClientRequestDto } from './dto/create-client.dto';
+import { UpdateClientRequestDto } from './dto/update-client.dto';
 
 @Controller('clients')
 export class ClientController {
