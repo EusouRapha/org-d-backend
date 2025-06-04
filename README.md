@@ -102,5 +102,3 @@ npm test
 ```
 
 ---
-
-<div align="center">⬆️ [Voltar ao topo](#org-d)</div>
