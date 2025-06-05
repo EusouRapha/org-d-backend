@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from 'src/clients/entities/clients.entity';
 import { Repository } from 'typeorm';
@@ -15,7 +15,7 @@ export class AccountsService {
     private readonly accountsRepository: Repository<Account>,
     @InjectRepository(Client)
     private readonly clientsService: ClientsService,
-  ) {}
+  ) { }
 
   async findAllByClientId(
     client_id: number,
@@ -114,7 +114,26 @@ export class AccountsService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} account`;
+  async remove(id: number) {
+    const account = await this.accountsRepository.findOne({
+      where: { id: id },
+      relations: ['launches'],
+    });
+
+    if (!account) {
+      throw new Error('Account not found');
+    }
+
+    try {
+      await this.accountsRepository.remove(account);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Account deleted successfully',
+      };
+
+    } catch (error) {
+      throw new BadRequestException('Failed to delete account', error.message);
+    }
+
   }
 }

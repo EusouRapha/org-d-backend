@@ -4,10 +4,9 @@ import {
   Delete,
   Get,
   Param,
-  ParseUUIDPipe,
   Patch,
   Post,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from 'src/guards/auth.guard';
@@ -34,7 +33,7 @@ export class ClientController {
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: number) {
+  findOne(@Param('id') id: number) {
     return this.clientsService.findOneById(id);
   }
 
@@ -42,7 +41,7 @@ export class ClientController {
   @UseGuards(AuthGuard)
   @Patch(':id')
   update(
-    @Param('id', new ParseUUIDPipe()) id: number,
+    @Param('id') id: number,
     @Body() body: UpdateClientRequestDto,
   ) {
     return this.clientsService.update(id, body);
@@ -51,7 +50,7 @@ export class ClientController {
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: number) {
+  remove(@Param('id') id: number) {
     return this.clientsService.hardDelete(id);
   }
 }

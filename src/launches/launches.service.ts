@@ -81,7 +81,7 @@ export class LaunchesService {
     return response;
   }
 
-  async findOne(id: string): Promise<Launch> {
+  async findOne(id: number): Promise<Launch> {
     return await this.launchesRepository.findOne({
       where: { id: Number(id) },
       relations: ['account'],
@@ -89,7 +89,7 @@ export class LaunchesService {
   }
 
   async update(
-    id: string,
+    id: number,
     body: UpdateLaunchRequestDto,
   ): Promise<GenericResponseType> {
     try {
@@ -98,7 +98,7 @@ export class LaunchesService {
       }
 
       const foundLaunch: Launch = await this.launchesRepository.findOne({
-        where: { id: Number(id) },
+        where: { id: id },
         relations: ['account'],
       });
 
@@ -126,34 +126,6 @@ export class LaunchesService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Launch updated successfully',
-      };
-    } catch (error) {
-      const isBadRequest = error instanceof BadRequestException;
-      return {
-        statusCode: isBadRequest
-          ? HttpStatus.BAD_REQUEST
-          : HttpStatus.INTERNAL_SERVER_ERROR,
-        message: 'Validation failed',
-        error: isBadRequest ? error.message : error,
-      };
-    }
-  }
-
-  async hardDelete(id: number): Promise<GenericResponseType> {
-    try {
-      const foundLaunch: Launch = await this.launchesRepository.findOneBy({
-        id: id,
-      });
-
-      if (!foundLaunch) {
-        throw new BadRequestException('Launch not found');
-      }
-
-      await this.launchesRepository.delete(foundLaunch);
-
-      return {
-        statusCode: HttpStatus.OK,
-        message: 'Launch deleted successfully',
       };
     } catch (error) {
       const isBadRequest = error instanceof BadRequestException;

@@ -1,13 +1,11 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
-  ParseUUIDPipe,
   Patch,
   Post,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from 'src/guards/auth.guard';
@@ -32,20 +30,16 @@ export class LaunchesController {
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+  findOne(@Param('id') id: number) {
     return this.launchesService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id') id: number,
     @Body() body: UpdateLaunchRequestDto,
   ) {
     return this.launchesService.update(id, body);
   }
 
-  @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: number) {
-    return this.launchesService.hardDelete(+id);
-  }
 }

@@ -96,16 +96,16 @@ export class ClientsService {
   }
 
   async hardDelete(id: number): Promise<GenericResponseType> {
-    const foundClient: Client = await this.clientsRepository.findOneBy({
-      client_id: id,
-    });
-
+  const foundClient: Client = await this.clientsRepository.findOne({
+    where: { client_id: id },
+    relations: ['accounts'],
+  });
     if (!foundClient) {
       throw new BadRequestException('Client not found');
     }
 
     try {
-      await this.clientsRepository.delete(foundClient);
+      await this.clientsRepository.remove(foundClient);
       return {
         statusCode: HttpStatus.OK,
         message: 'Client deleted successfully',

@@ -32,6 +32,6 @@ export class Launch {
   )
   generated_at: Date;
 
-  @ManyToOne(() => Account, account => account.launches, { eager: true })
+  @ManyToOne(() => Account, account => account.launches, { eager: true, cascade: true, onDelete: 'CASCADE' })
   account: Account;
 }

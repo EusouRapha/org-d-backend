@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseBoolPipe,
@@ -45,5 +46,11 @@ export class AccountsController {
     @Body() updateAccountDto: UpdateAccountRequestDto,
   ) {
     return this.accountsService.update(+id, updateAccountDto);
+  }
+
+
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.accountsService.remove(+id);
   }
 }

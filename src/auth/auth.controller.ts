@@ -15,9 +15,8 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { SignInResponseDto } from './dto/sign-in-response.dto';
 
 @Controller('auth')
-// @ApiBearerAuth('JWT')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
