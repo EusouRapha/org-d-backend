@@ -86,7 +86,7 @@ Compile o Org-D a partir do código-fonte e instale as dependências:
 
 4. **Crie um arquivo .env baseado no .env.example que está na raiz do projeto**
 
-Note que esse projeto necessida do PostgreSQL instalado, então, caso não tenha-o em seu sistema, baixe-o e instale em
+Note que esse projeto necessita do PostgreSQL instalado, então, caso não tenha-o em seu sistema, baixe-o e instale em
 <div align="center"><a href="https://www.postgresql.org/download/">Download PostgreSQL</a></div>
 
 
