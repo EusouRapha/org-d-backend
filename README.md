@@ -99,4 +99,19 @@ Execute o projeto com:
 npm start
 ```
 
+
+### Documentação
+
+Para acessar a documentação da API, acesse
+
+```bash
+http://{urlDoProjeto}/api
+```
+Exemplo:
+
+```bash
+http://localhost:4000/api
+```
+
+
 <div align="center">⬆️ <a href="#org-d-backend">Voltar ao topo</a></div>
