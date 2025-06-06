@@ -62,7 +62,13 @@ Este projeto facilita o desenvolvimento de aplicações financeiras escaláveis,
 Este projeto requer as seguintes dependências:
 
 * **Linguagem de Programação:** TypeScript
-* **Gerenciador de Pacotes:** npm
+* **Gerenciador de Pacotes:** [pnpm](https://pnpm.io/) (instalado globalmente)
+
+Para instalar o `pnpm`:
+
+```bash
+npm install -g pnpm
+```
 
 ### Instalação
 
@@ -81,7 +87,7 @@ Compile o Org-D a partir do código-fonte e instale as dependências:
 3. **Instale as dependências:**
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 4. **Crie um arquivo .env baseado no .env.example que está na raiz do projeto**
@@ -96,7 +102,7 @@ Note que esse projeto necessita do PostgreSQL instalado, então, caso não tenha
 Execute o projeto com:
 
 ```bash
-npm start
+pnpm dev
 ```
 
 
