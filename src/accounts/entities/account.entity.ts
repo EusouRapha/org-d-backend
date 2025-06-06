@@ -1,14 +1,13 @@
+import { Client } from 'src/clients/entities/clients.entity';
+import { Launch } from 'src/launches/entities/launch.entity';
 import {
   Column,
   Entity,
-  PrimaryGeneratedColumn,
+  JoinColumn,
   ManyToOne,
   OneToMany,
-  JoinColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Client } from 'src/clients/entities/clients.entity';
-import { Launch } from 'src/launches/entities/launch.entity';
-// import { Launch } from './launch.entity';
 
 @Entity('accounts')
 export class Account {
@@ -18,12 +17,13 @@ export class Account {
   @Column({ length: 100 })
   number: string;
 
-  @ManyToOne(() => Client, (client) => client.accounts, { eager: true })
+  @ManyToOne(() => Client, (client) => client.accounts, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'client_id' })
   client: Client;
 
   @Column('float')
   balance: number;
+
 
   @OneToMany(() => Launch, (launch) => launch.account)
   launches: Launch[];

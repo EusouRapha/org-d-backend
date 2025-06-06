@@ -23,6 +23,6 @@ export class Client {
   @Column({ length: 20 })
   phone_number: string;
 
-  @OneToMany(() => Account, account => account.client)
+  @OneToMany(() => Account, account => account.client, { cascade: true, onDelete: 'CASCADE' })
   accounts: Account[];
 }
