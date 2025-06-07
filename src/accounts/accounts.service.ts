@@ -17,6 +17,33 @@ export class AccountsService {
     private readonly clientsService: ClientsService,
   ) { }
 
+  async findAllAccounts(): Promise<GetAccountResponseDto[]> {
+  const foundAccounts = await this.accountsRepository.find({ relations: ['client', 'launches'] });
+
+  if( !foundAccounts || foundAccounts.length === 0) {
+    throw new BadRequestException('No accounts found');
+  }
+
+  const results = foundAccounts.map((account) => {
+      return {
+        id: account.id,
+        account_number: account.number,
+        balance: account.balance,
+        limit: account.limit,
+        launches: [
+          ...account.launches.map((launch) => ({
+            id: launch.id,
+            value: launch.value,
+            type: launch.type,
+            date: launch.generated_at,
+          })),
+        ],
+      };
+  }
+  );
+  return results;
+}
+
   async findAllByClientId(
     client_id: number,
     details?: boolean,
@@ -35,6 +62,7 @@ export class AccountsService {
         id: account.id,
         account_number: account.number,
         balance: account.balance,
+        limit: account.limit,
       }));
     }
 
@@ -43,11 +71,13 @@ export class AccountsService {
         id: account.id,
         account_number: account.number,
         balance: account.balance,
+        limit: account.limit,
         launches: [
           ...account.launches.map((launch) => ({
             id: launch.id,
             value: launch.value,
             type: launch.type,
+            operation: launch.operation,
             date: launch.generated_at,
           })),
         ],
@@ -87,6 +117,7 @@ export class AccountsService {
     const newAccount = {
       number: account_number,
       balance: 0,
+      limit: 0,
       client: client,
     };
 
@@ -104,9 +135,14 @@ export class AccountsService {
         throw new Error('Account not found');
       }
 
+      if(updateAccountDto.client_id && updateAccountDto.client_id !== account.client.client_id) {
+        throw new BadRequestException('Client ID does not match the account client');
+      }
+
       const updatedAccount = {
         ...account,
-        balance: updateAccountDto.value,
+        balance: updateAccountDto.value ?? account.balance,
+        limit: updateAccountDto.limit ?? account.limit,
       };
       return await this.accountsRepository.save(updatedAccount);
     } catch (error) {

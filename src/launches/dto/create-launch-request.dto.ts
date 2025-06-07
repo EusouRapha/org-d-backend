@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
-import { LaunchType } from '../entities/launch.entity';
+import { LaunchOperation, LaunchType } from '../entities/launch.entity';
 
 export class CreateLaunchRequestDto {
   @IsNumber()
@@ -18,6 +18,14 @@ export class CreateLaunchRequestDto {
     description: 'The type of the launch',
   })
   type: LaunchType;
+
+  @IsEnum(LaunchOperation)
+  @ApiProperty({
+    example: 'DEPOSIT',
+    enum: LaunchOperation,
+    description: 'The operation type of the launch',
+  })
+  operation: LaunchOperation;
 
   @ApiProperty({
     example: 'JQ-1212122',

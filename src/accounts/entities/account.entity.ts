@@ -24,6 +24,8 @@ export class Account {
   @Column('float')
   balance: number;
 
+  @Column('float', { default: 0 })
+  limit: number;
 
   @OneToMany(() => Launch, (launch) => launch.account)
   launches: Launch[];

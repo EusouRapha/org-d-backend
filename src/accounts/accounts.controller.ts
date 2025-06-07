@@ -20,7 +20,7 @@ import { UpdateAccountRequestDto } from './dto/update-account.dto';
 @UseGuards(AuthGuard)
 @Controller('accounts')
 export class AccountsController {
-  constructor(private readonly accountsService: AccountsService) {}
+  constructor(private readonly accountsService: AccountsService) { }
 
   @Post()
   @ApiOperation({ summary: 'Create a new account' })
@@ -28,6 +28,13 @@ export class AccountsController {
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
   create(@Body() createAccountDto: CreateAccountDto) {
     return this.accountsService.create(createAccountDto);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all accounts in the system' })
+  @ApiResponse({ status: 200, description: 'List of all accounts retrieved successfully.' })
+  findAllAccounts() {
+    return this.accountsService.findAllAccounts();
   }
 
   @Get('clients/:client_id')

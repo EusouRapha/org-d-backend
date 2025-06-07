@@ -1,13 +1,20 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { CreateAccountDto } from './create-account.dto';
-import { IsNumber, IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class UpdateAccountRequestDto {
-  @IsNumber()
   @IsNotEmpty()
+  client_id?: number;
+
+
   @ApiProperty({
     example: 150.75,
     description: 'The value of the launch',
   })
-  value: number;
+  value?: number;
+
+  @ApiProperty({
+    example: 150.75,
+    description: 'The value of the new limit',
+  })
+  limit?: number;
 }

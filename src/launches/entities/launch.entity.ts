@@ -12,6 +12,14 @@ export enum LaunchType {
   DEBIT = 'DEBIT',
 }
 
+export enum LaunchOperation {
+  DEPOSIT = 'DEPOSIT',
+  WITHDRAW = 'WITHDRAW',
+  BONUS = 'BONUS',
+  TRANSFER = 'TRANSFER',
+  FEE = 'FEE',
+}
+
 @Entity('launches')
 export class Launch {
   @PrimaryGeneratedColumn()
@@ -26,6 +34,13 @@ export class Launch {
     enum: LaunchType,
   })
   type: LaunchType;
+
+  @Column({
+    type: 'enum',
+    enum: LaunchOperation,
+    default: LaunchOperation.DEPOSIT,
+  })
+  operation: LaunchOperation;
 
   @Column(
     { type: 'timestamp'}

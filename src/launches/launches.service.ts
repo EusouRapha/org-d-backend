@@ -35,6 +35,7 @@ export class LaunchesService {
       const newLaunch: Launch = this.launchesRepository.create({
         value: body.value,
         type: body.type,
+        operation: body.operation,
         generated_at: new Date(),
         account: account,
       });
